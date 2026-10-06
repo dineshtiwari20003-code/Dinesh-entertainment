@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Movies - Dinesh Entertainment</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: white;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+header {
+    background: #000;
+    padding: 18px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 25px;
+}
+
+nav a:hover {
+    color: red;
+}
+
+.logout {
+    background: #444;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 20px;
+}
+
+.logout:hover {
+    background: #666;
+}
+
+
+/* =========================
+   MAIN
+========================= */
+
+.container {
+    padding: 30px;
+}
+
+.welcome {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.welcome h1 {
+    color: red;
+    font-size: 34px;
+    margin-bottom: 15px;
+}
+
+.status {
+    color: #00ff00;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+
+/* =========================
+   CATEGORY BUTTONS
+========================= */
+
+.categories {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 30px 0;
+}
+
+.category-button {
+    background: #333;
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.category-button:hover {
+    background: #555;
+}
+
+.category-button.active {
+    background: red;
+}
+
+
+/* =========================
+   CATEGORY TITLE
+========================= */
+
+.category-title {
+    font-size: 28px;
+    margin: 30px 0 20px 0;
+    color: white;
+    border-left: 5px solid red;
+    padding-left: 12px;
+}
+
+
+/* =========================
+   MOVIE GRID
+   5 MOVIES IN ONE LINE
+========================= */
+
+.movies {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    width: 100%;
+}
+
+
+/* =========================
+   MOVIE CARD
+========================= */
+
+.movie-card {
+    width: 100%;
+    background: #222;
+    border-radius: 10px;
+    overflow: hidden;
+    text-align: center;
+    padding-bottom: 15px;
+    transition: 0.3s;
+}
+
+.movie-card:hover {
+    transform: scale(1.03);
+}
+
+.movie-card img {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    display: block;
+}
+
+.movie-card h2 {
+    font-size: 20px;
+    margin: 12px 5px 5px 5px;
+}
+
+.movie-card p {
+    color: #aaa;
+    margin: 5px;
+}
+
+.watch-button {
+    display: inline-block;
+    background: red;
+    color: white;
+    text-decoration: none;
+    padding: 10px 22px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.watch-button:hover {
+    background: darkred;
+}
+
+
+/* =========================
+   CATEGORY HIDE / SHOW
+========================= */
+
+.category-section {
+    display: none;
+}
+
+.category-section.show {
+    display: block;
+}
+
+
+/* =========================
+   MESSAGE
+========================= */
+
+#message {
+    text-align: center;
+    margin-top: 100px;
+    font-size: 22px;
+}
+
+
+/* =========================
+   LARGE SCREEN
+========================= */
+
+@media (max-width: 1200px) {
+
+    .movies {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+}
+
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 900px) {
+
+    .movies {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+    header {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    nav a {
+        margin-left: 10px;
+    }
+
+    .container {
+        padding: 15px;
+    }
+
+    .welcome h1 {
+        font-size: 27px;
+    }
+
+    .movies {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .movie-card img {
+        height: 230px;
+    }
+
+    .movie-card h2 {
+        font-size: 17px;
+    }
+
+    .watch-button {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<header>
+
+<div class="logo">
+🎬 Dinesh Entertainment
+</div>
+
+
+<nav>
+
+<a href="dinesh.html">
+Home
+</a>
+
+<a href="movie.html">
+Movies
+</a>
+
+<button
+class="logout"
+onclick="logout()">
+
+Logout
+
+</button>
+
+</nav>
+
+</header>
+
+
+
+<!-- =========================
+     MAIN
+========================= -->
+
+<div class="container">
+
+
+<div id="message">
+🔄 Checking membership...
+</div>
+
+
+
+<div
+id="content"
+style="display:none;">
+
+
+
+<!-- =========================
+     WELCOME
+========================= -->
+
+<div class="welcome">
+
+<h1>
+🎬 Welcome to Dinesh Entertainment
+</h1>
+
+<p>
+Enjoy Movies & Web Series
+</p>
+
+<p class="status">
+✅ Your Membership is Active
+</p>
+
+<p id="expiry"></p>
+
+</div>
+
+
+
+<!-- =========================
+     CATEGORY BUTTONS
+========================= -->
+
+<div class="categories">
+
+
+<button
+class="category-button active"
+onclick="showCategory('all', this)">
+
+🎬 All
+
+</button>
+
+
+<button
+class="category-button"
+onclick="showCategory('bollywood', this)">
+
+🇮🇳 Bollywood
+
+</button>
+
+
+<button
+class="category-button"
+onclick="showCategory('hollywood', this)">
+
+🇺🇸 Hollywood
+
+</button>
+
+
+<button
+class="category-button"
+onclick="showCategory('south', this)">
+
+🎞️ South Indian
+
+</button>
+
+
+<button
+class="category-button"
+onclick="showCategory('webseries', this)">
+
+📺 Web Series
+
+</button>
+
+
+<button
+class="category-button"
+onclick="showCategory('wwe', this)">
+
+🤼 WWE
+
+</button>
+
+
+</div>
+
+
+
+<!-- =========================
+     ALL MOVIES
+========================= -->
+
+<div
+id="all"
+class="category-section show">
+
+
+<h2 class="category-title">
+🎬 All Movies
+</h2>
+
+
+<div class="movies">
+
+
+<!-- 1 -->
+
+<div class="movie-card">
+
+<img src="photo/Iron.jpg">
+
+<h2>Iron Man 2</h2>
+
+<p>Hollywood</p>
+
+<a
+href="#"
+class="watch-button">
+
+▶ Watch Now
+
+</a>
+
+</div>
+
+
+
+<!-- 2 -->
+
+<div class="movie-card">
+
+<img src="photo/toy.jpg">
+
+<h2>Toy Story 5</h2>
+
+<p>Hollywood</p>
+
+<a
+href="#"
+class="watch-button">
+
+▶ Watch Now
+
+</a>
+
+</div>
+
+
+
+<!-- 3 -->
+
+<div class="movie-card">
+
+<img src="photo/od.jpg">
+
+<h2>The Odyssey</h2>
+
+<p>Hollywood</p>
+
+<a
+href="#"
+class="watch-button">
+
+▶ Watch Now
+
+</a>
+
+</div>
+
+
+
+<!-- 4 -->
+
+<div class="movie-card">
+
+<img src="photo/spider.jpg">
+
+<h2>Spider-Man</h2>
+
+<p>Hollywood</p>
+
+<a
+href="#"
+class="watch-button">
+
+▶ Watch Now
+
+</a>
+
+</div>
+
+
+
+<!-- 5 -->
+
+<div class="movie-card">
+
+<img src="photo/Movie.jpg">
+
+<h2>Up Coming</h2>
+
+<p>Bollywood</p>
+
+<a
+href="#"
+class="watch-button">
+
+▶ Watch Now
+
+</a>
+
+</div>
+
+
+
+<!-- 6 -->
+
+<div class="movie-card">
+
+<img src="photo/wwe.jpg">
+
+<h2>WWE</h2>
+
+<p>WWE</p>
+
+<a
+href="#"
+class="watch-button">
+
+▶ Watch Now
+
+</a>
+
+</div>
+
+
+
+<!-- 7 -->
+
+<div class="movie-card">
+
+<img src="photo/kabir.jpg">
+
+<h2>Kabir Singh</h2>
+
+<p>Bollywood</p>
+
+<a
+href="#"
+class="watch-button">
+
+▶ Watch Now
+
+</a>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+
+<!-- =========================
+     BOLLYWOOD
+========================= -->
+
+<div
+id="bollywood"
+class="category-section">
+
+
+<h2 class="category-title">
+🇮🇳 Bollywood Movies
+</h2>
+
+
+<div class="movies">
+
+
+<div class="movie-card">
+
+<img src="photo/Movie.jpg">
+
+<h2>Up Coming</h2>
+
+<p>Bollywood</p>
+
+<a
+href="#"
+class="watch-button">
+
+▶ Watch Now
+
+</a>
+
+</div>
+
+
+
+<div class="movie-card">
+
+<img src="photo/kabir.jpg">
+
+<h2>Kabir Singh</h2>
+
+<p>Bollywood</p>
+
+<a
+href="#"
+class="watch-button">
+
+▶ Watch Now
+
+</a>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+
+<!-- =========================
+     HOLLYWOOD
+========================= -->
+
+<div
+id="hollywood"
+class="category-section">
+
+
+<h2 class="category-title">
+🇺🇸 Hollywood Movies
+</h2>
+
+
+<div class="movies">
+
+
+<div class="movie-card">
+
+<img src="photo/Iron.jpg">
+
+<h2>Iron Man 2</h2>
+
+<p>Hollywood</p>
+
+<a
+href="#"
+class="watch-button">
+
+▶ Watch Now
+
+</a>
+
+</div>
+
+
+
+<div class="movie-card">
+
+<img src="photo/toy.jpg">
+
+<h2>Toy Story 5</h2>
+
+<p>Hollywood</p>
+
+<a
+href="#"
+class="watch-button">
+
+▶ Watch Now
+
+</a>
+
+</div>
+
+
+
+<div class="movie-card">
+
+<img src="photo/od.jpg">
+
+<h2>The Odyssey</h2>
+
+<p>Hollywood</p>
+
+<a
+href="#"
+class="watch-button">
+
+▶ Watch Now
+
+</a>
+
+</div>
+
+
+
+<div class="movie-card">
+
+<img src="photo/spider.jpg">
+
+<h2>Spider-Man</h2>
+
+<p>Hollywood</p>
+
+<a
+href="#"
+class="watch-button">
+
+▶ Watch Now
+
+</a>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+
+<!-- =========================
+     SOUTH INDIAN
+========================= -->
+
+<div
+id="south"
+class="category-section">
+
+
+<h2 class="category-title">
+🎞️ South Indian Movies
+</h2>
+
+
+<div class="movies">
+
+
+<div class="movie-card">
+
+<img src="photo/od.jpg">
+
+<h2>South Movie 1</h2>
+
+<p>South Indian</p>
+
+<a
+href="#"
+class="watch-button">
+
+▶ Watch Now
+
+</a>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+
+<!-- =========================
+     WEB SERIES
+========================= -->
+
+<div
+id="webseries"
+class="category-section">
+
+
+<h2 class="category-title">
+📺 Web Series
+</h2>
+
+
+<div class="movies">
+
+
+<div class="movie-card">
+
+<img src="photo/Movie.jpg">
+
+<h2>Web Series 1</h2>
+
+<p>Web Series</p>
+
+<a
+href="#"
+class="watch-button">
+
+▶ Watch Now
+
+</a>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+
+<!-- =========================
+     WWE
+========================= -->
+
+<div
+id="wwe"
+class="category-section">
+
+
+<h2 class="category-title">
+🤼 WWE
+</h2>
+
+
+<div class="movies">
+
+
+<div class="movie-card">
+
+<img src="photo/wwe.jpg">
+
+<h2>WWE WrestleMania</h2>
+
+<p>WWE</p>
+
+<a
+href="#"
+class="watch-button">
+
+▶ Watch Now
+
+</a>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+
+</div>
+
+</div>
+
+
+
+<script>
+
+
+/* =========================
+   SUPABASE CONNECTION
+========================= */
+
+const SUPABASE_URL =
+"https://mbplbqmkmbvffphwgfbj.supabase.co";
+
+
+const SUPABASE_PUBLISHABLE_KEY =
+"sb_publishable_IU3LvSM7Vb3gp1P_d0Qddw_XS0rr_yO";
+
+
+const supabaseClient =
+supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+);
+
+
+
+/* =========================
+   CHECK MEMBERSHIP
+========================= */
+
+async function checkMembership() {
+
+
+    const {
+        data: {
+            user
+        },
+        error: userError
+    } =
+    await supabaseClient.auth.getUser();
+
+
+    if (userError || !user) {
+
+        document
+        .getElementById("message")
+        .innerHTML =
+        "❌ Please login first.";
+
+        return;
+
+    }
+
+
+    const {
+        data: profile,
+        error
+    } =
+    await supabaseClient
+    .from("profiles")
+    .select(
+        "membership_status, membership_expiry"
+    )
+    .eq("id", user.id)
+    .single();
+
+
+    if (error || !profile) {
+
+        document
+        .getElementById("message")
+        .innerHTML =
+        "❌ Membership information not found.";
+
+        return;
+
+    }
+
+
+    const today =
+    new Date()
+    .toISOString()
+    .split("T")[0];
+
+
+    if (
+        profile.membership_status !== "active"
+        ||
+        !profile.membership_expiry
+        ||
+        profile.membership_expiry < today
+    ) {
+
+        document
+        .getElementById("message")
+        .innerHTML =
+        "❌ Your membership is not active.<br><br>" +
+
+        "Please purchase the ₹60 monthly membership.";
+
+        return;
+
+    }
+
+
+    document
+    .getElementById("message")
+    .style.display =
+    "none";
+
+
+    document
+    .getElementById("content")
+    .style.display =
+    "block";
+
+
+    document
+    .getElementById("expiry")
+    .innerHTML =
+    "Membership valid until: " +
+    profile.membership_expiry;
+
+}
+
+
+
+/* =========================
+   CATEGORY FUNCTION
+========================= */
+
+function showCategory(
+    category,
+    button
+) {
+
+
+    const sections =
+    document.querySelectorAll(
+        ".category-section"
+    );
+
+
+    sections.forEach(
+        function(section) {
+
+            section.classList.remove(
+                "show"
+            );
+
+        }
+    );
+
+
+    document
+    .getElementById(category)
+    .classList.add("show");
+
+
+    const buttons =
+    document.querySelectorAll(
+        ".category-button"
+    );
+
+
+    buttons.forEach(
+        function(btn) {
+
+            btn.classList.remove(
+                "active"
+            );
+
+        }
+    );
+
+
+    button.classList.add(
+        "active"
+    );
+
+
+    window.scrollTo({
+        top: 300,
+        behavior: "smooth"
+    });
+
+}
+
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+async function logout() {
+
+
+    await supabaseClient
+    .auth
+    .signOut();
+
+
+    window.location.href =
+    "dinesh.html";
+
+}
+
+
+
+/* =========================
+   START
+========================= */
+
+checkMembership();
+
+
+</script>
+
+
+</body>
+
+</html>

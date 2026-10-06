@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Membership - Dinesh Entertainment</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #111;
+    color: white;
+}
+
+.box {
+    width: 400px;
+    margin: 50px auto;
+    padding: 30px;
+    background: #222;
+    border-radius: 15px;
+    text-align: center;
+}
+
+h1 {
+    color: red;
+}
+
+.price {
+    font-size: 25px;
+    color: #00ff00;
+    font-weight: bold;
+}
+
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin: 25px 0;
+}
+
+.tabs button {
+    width: 50%;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    background: #444;
+    color: white;
+}
+
+.tabs button.active {
+    background: red;
+}
+
+input {
+    width: 90%;
+    padding: 13px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.main-button {
+    width: 90%;
+    padding: 14px;
+    margin-top: 15px;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.main-button:hover {
+    background: darkred;
+}
+
+.form {
+    display: none;
+}
+
+.form.show {
+    display: block;
+}
+
+#message {
+    margin-top: 15px;
+    line-height: 1.5;
+}
+
+.back {
+    display: block;
+    margin-top: 20px;
+    color: white;
+    text-decoration: none;
+}
+
+.back:hover {
+    color: red;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="box">
+
+
+<h1>🎬 Dinesh Entertainment</h1>
+
+<h2>Membership</h2>
+
+<p class="price">₹60 / 1 Month</p>
+
+<p>Movies & Web Series</p>
+
+
+<div class="tabs">
+
+
+<button
+id="signupTab"
+class="active"
+onclick="showSignup()">
+
+Create Account
+
+</button>
+
+
+<button
+id="loginTab"
+onclick="showLogin()">
+
+Login
+
+</button>
+
+
+</div>
+
+
+
+<!-- CREATE ACCOUNT -->
+
+<div
+id="signupForm"
+class="form show">
+
+
+<input
+type="text"
+id="name"
+placeholder="Enter Your Name">
+
+
+<input
+type="email"
+id="signupEmail"
+placeholder="Enter Your Email">
+
+
+<input
+type="tel"
+id="mobile"
+placeholder="Enter Your Mobile Number">
+
+
+<input
+type="password"
+id="signupPassword"
+placeholder="Create Password">
+
+
+<button
+class="main-button"
+onclick="createAccount()">
+
+Create Account
+
+</button>
+
+
+</div>
+
+
+
+<!-- LOGIN -->
+
+<div
+id="loginForm"
+class="form">
+
+
+<input
+type="email"
+id="loginEmail"
+placeholder="Enter Your Email">
+
+
+<input
+type="password"
+id="loginPassword"
+placeholder="Enter Your Password">
+
+
+<button
+class="main-button"
+onclick="loginUser()">
+
+Login
+
+</button>
+
+
+</div>
+
+
+<div id="message"></div>
+
+
+<a
+href="dinesh.html"
+class="back">
+
+← Back to Home
+
+</a>
+
+
+</div>
+
+
+
+<script>
+
+
+/* =========================
+   SUPABASE CONNECTION
+========================= */
+
+
+const SUPABASE_URL =
+"https://mbplbqmkmbvffphwgfbj.supabase.co";
+
+
+const SUPABASE_PUBLISHABLE_KEY =
+"sb_publishable_IU3LvSM7Vb3gp1P_d0Qddw_XS0rr_yO";
+
+
+const supabaseClient =
+supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+);
+
+
+
+/* =========================
+   SHOW SIGNUP
+========================= */
+
+
+function showSignup() {
+
+
+    document
+    .getElementById("signupForm")
+    .classList.add("show");
+
+
+    document
+    .getElementById("loginForm")
+    .classList.remove("show");
+
+
+    document
+    .getElementById("signupTab")
+    .classList.add("active");
+
+
+    document
+    .getElementById("loginTab")
+    .classList.remove("active");
+
+
+    document
+    .getElementById("message")
+    .innerHTML = "";
+
+
+}
+
+
+
+/* =========================
+   SHOW LOGIN
+========================= */
+
+
+function showLogin() {
+
+
+    document
+    .getElementById("signupForm")
+    .classList.remove("show");
+
+
+    document
+    .getElementById("loginForm")
+    .classList.add("show");
+
+
+    document
+    .getElementById("signupTab")
+    .classList.remove("active");
+
+
+    document
+    .getElementById("loginTab")
+    .classList.add("active");
+
+
+    document
+    .getElementById("message")
+    .innerHTML = "";
+
+
+}
+
+
+
+/* =========================
+   CREATE ACCOUNT
+========================= */
+
+
+async function createAccount() {
+
+
+    const name =
+    document
+    .getElementById("name")
+    .value
+    .trim();
+
+
+    const email =
+    document
+    .getElementById("signupEmail")
+    .value
+    .trim();
+
+
+    const mobile =
+    document
+    .getElementById("mobile")
+    .value
+    .trim();
+
+
+    const password =
+    document
+    .getElementById("signupPassword")
+    .value;
+
+
+    const message =
+    document
+    .getElementById("message");
+
+
+    if (
+        !name ||
+        !email ||
+        !mobile ||
+        !password
+    ) {
+
+        message.innerHTML =
+        "❌ Please fill all details.";
+
+        return;
+
+    }
+
+
+    if (password.length < 6) {
+
+        message.innerHTML =
+        "❌ Password must be at least 6 characters.";
+
+        return;
+
+    }
+
+
+    message.innerHTML =
+    "Creating your account...";
+
+
+    const {
+        data,
+        error
+    } =
+    await supabaseClient.auth.signUp({
+
+        email: email,
+
+        password: password,
+
+        options: {
+
+            data: {
+
+                full_name: name,
+
+                mobile: mobile
+
+            }
+
+        }
+
+    });
+
+
+    if (error) {
+
+        message.innerHTML =
+        "❌ " + error.message;
+
+        return;
+
+    }
+
+
+    message.innerHTML =
+    "✅ Account created!<br>Opening payment...";
+
+
+    setTimeout(function() {
+
+        window.location.href =
+        "payment.html";
+
+    }, 1500);
+
+
+}
+
+
+
+/* =========================
+   LOGIN
+========================= */
+
+
+async function loginUser() {
+
+
+    const email =
+    document
+    .getElementById("loginEmail")
+    .value
+    .trim();
+
+
+    const password =
+    document
+    .getElementById("loginPassword")
+    .value;
+
+
+    const message =
+    document
+    .getElementById("message");
+
+
+    if (!email || !password) {
+
+        message.innerHTML =
+        "❌ Please enter email and password.";
+
+        return;
+
+    }
+
+
+    message.innerHTML =
+    "🔄 Logging in...";
+
+
+    /* LOGIN */
+
+    const {
+        data,
+        error
+    } =
+    await supabaseClient.auth.signInWithPassword({
+
+        email: email,
+
+        password: password
+
+    });
+
+
+    if (error) {
+
+        message.innerHTML =
+        "❌ Login failed:<br>" +
+        error.message;
+
+        return;
+
+    }
+
+
+    /* CHECK USER */
+
+    const user =
+    data.user;
+
+
+    if (!user) {
+
+        message.innerHTML =
+        "❌ User session not found.";
+
+        return;
+
+    }
+
+
+    message.innerHTML =
+    "🔄 Checking membership...";
+
+
+    /* GET PROFILE */
+
+    const {
+        data: profile,
+        error: profileError
+    } =
+    await supabaseClient
+
+    .from("profiles")
+
+    .select(
+        "id, email, membership_status, membership_start, membership_expiry"
+    )
+
+    .eq("id", user.id)
+
+    .maybeSingle();
+
+
+    /* PROFILE ERROR */
+
+    if (profileError) {
+
+        message.innerHTML =
+        "❌ Profile error:<br>" +
+        profileError.message;
+
+        return;
+
+    }
+
+
+    /* PROFILE NOT FOUND */
+
+    if (!profile) {
+
+        message.innerHTML =
+        "❌ Membership information not found.<br><br>" +
+
+        "Login Email: " +
+        user.email +
+        "<br><br>" +
+
+        "User ID:<br>" +
+        user.id;
+
+        return;
+
+    }
+
+
+    /* TODAY */
+
+    const today =
+    new Date()
+    .toISOString()
+    .split("T")[0];
+
+
+    /* MEMBERSHIP CHECK */
+
+    if (
+        profile.membership_status === "active"
+        &&
+        profile.membership_expiry
+        &&
+        profile.membership_expiry >= today
+    ) {
+
+
+        message.innerHTML =
+        "✅ Login successful!<br><br>" +
+
+        "Membership: ACTIVE<br>" +
+
+        "Valid Until: " +
+        profile.membership_expiry +
+        "<br><br>" +
+
+        "Opening Movies...";
+
+
+        setTimeout(function() {
+
+            window.location.href =
+            "movie.html";
+
+        }, 1000);
+
+
+        return;
+
+    }
+
+
+    /* MEMBERSHIP NOT ACTIVE */
+
+    message.innerHTML =
+    "❌ Membership is not active.<br><br>" +
+
+    "Please pay ₹60 for 1 month membership.";
+
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>

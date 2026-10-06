@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Payment - Dinesh Entertainment</title>
+
+<style>
+
+body {
+    margin: 0;
+    background-color: #111;
+    color: white;
+    font-family: Arial;
+    text-align: center;
+}
+
+.box {
+    width: 350px;
+    margin: 80px auto;
+    padding: 30px;
+    background-color: #222;
+    border-radius: 15px;
+}
+
+h1 {
+    color: red;
+}
+
+.price {
+    font-size: 35px;
+    color: #00ff00;
+    margin: 20px;
+    font-weight: bold;
+}
+
+.payment-button {
+    margin-top: 25px;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="box">
+
+    <h1>🎬 Dinesh Entertainment</h1>
+
+    <h2>Monthly Membership</h2>
+
+    <div class="price">₹60</div>
+
+    <p>1 Month Membership</p>
+
+    <p>Watch Movies & Web Series</p>
+
+
+    <div class="payment-button">
+
+        <form>
+
+            <script
+                src="https://checkout.razorpay.com/v1/payment-button.js"
+                data-payment_button_id="pl_TkYtVtj8BGDWe1"
+                async>
+            </script>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
