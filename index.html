@@ -80,13 +80,36 @@ nav a:hover {
     margin-bottom: 25px;
 }
 
+.movie-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+}
+
 .movie-image {
-    width: 200px;
-    height: 200px;
+    width: 100%;
+    height: 250px;
     object-fit: cover;
     border: 3px solid white;
-    margin-right: 10px;
     border-radius: 5px;
+}
+
+@media (max-width: 1200px) {
+    .movie-container {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .movie-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .movie-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 </style>
@@ -103,57 +126,77 @@ nav a:hover {
 
 <nav>
 
-<a href="dinesh.html">Home</a>
+<a href="index.html">
+Home
+</a>
 
-<a href="movie.html">Movies</a>
+<a href="movie.html">
+Movies
+</a>
 
-<a href="#">Web Series</a>
+<a href="#">
+Web Series
+</a>
 
-<a href="membership.html">Login / Membership</a>
+<a href="membership.html">
+Login / Membership
+</a>
 
 </nav>
 
 </header>
 
-
 <div class="hero">
 
-<h1>Movies & Web Series</h1>
+<h1>
+Movies & Web Series
+</h1>
 
-<p>Watch your favourite Movies And Web Series</p>
+<p>
+Watch your favourite Movies And Web Series
+</p>
 
-<p class="price">₹60 / Month</p>
+<p class="price">
+₹60 / Month
+</p>
 
-<p>Get access to Movies & Web Series for 1 month</p>
+<p>
+Get access to Movies & Web Series for 1 month
+</p>
 
-<a href="membership.html" class="join-button">
+<a
+href="membership.html"
+class="join-button">
+
 Join Now - ₹60
+
 </a>
 
 </div>
 
-
 <div class="movies">
 
-<h2>🎬 Latest Movies And Web Series</h2>
+<h2>
+🎬 Latest Movies And Web Series
+</h2>
 
-<marquee>
+<div class="movie-container">
 
-<img src="photo/Iron.jpg" class="movie-image">
+<img src="iron.jpg" class="movie-image">
 
-<img src="photo/toy.jpg" class="movie-image">
+<img src="kabir.jpg" class="movie-image">
 
-<img src="photo/od.jpg" class="movie-image">
+<img src="movie.jpg" class="movie-image">
 
-<img src="photo/spider.jpg" class="movie-image">
+<img src="od.jpg" class="movie-image">
 
-<img src="photo/Movie.jpg" class="movie-image">
+<img src="spider.jpg" class="movie-image">
 
-<img src="photo/wwe.jpg" class="movie-image">
+<img src="wwe.jpg" class="movie-image">
 
-<img src="photo/kabir.jpg" class="movie-image">
+<img src="cars.jpg" class="movie-image">
 
-</marquee>
+</div>
 
 </div>
 
