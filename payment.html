@@ -1,41 +1,196 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
 <title>Payment - Dinesh Entertainment</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <style>
 
+* {
+    box-sizing: border-box;
+}
+
 body {
+
     margin: 0;
-    background-color: #111;
+
+    font-family: Arial, sans-serif;
+
+    background:
+        radial-gradient(
+            circle at top left,
+            #3b0764,
+            transparent 35%
+        ),
+
+        radial-gradient(
+            circle at top right,
+            #7f1d1d,
+            transparent 35%
+        ),
+
+        #080808;
+
     color: white;
-    font-family: Arial;
-    text-align: center;
+
+    min-height: 100vh;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
 }
 
 .box {
-    width: 350px;
-    margin: 80px auto;
-    padding: 30px;
-    background-color: #222;
-    border-radius: 15px;
+
+    width: 450px;
+
+    max-width: 92%;
+
+    padding: 35px 25px;
+
+    background: rgba(30,30,35,0.95);
+
+    border-radius: 20px;
+
+    text-align: center;
+
+    border: 1px solid #333;
+
+    box-shadow:
+        0 0 30px rgba(255,0,80,0.25);
+}
+
+.logo {
+
+    font-size: 25px;
+
+    font-weight: bold;
+
+    color: red;
+
+    margin-bottom: 20px;
 }
 
 h1 {
-    color: red;
+
+    margin: 10px 0;
+}
+
+.subtitle {
+
+    color: #ccc;
 }
 
 .price {
-    font-size: 35px;
-    color: #00ff00;
-    margin: 20px;
+
+    font-size: 40px;
+
     font-weight: bold;
+
+    color: #00ff88;
+
+    margin: 20px 0;
 }
 
-.payment-button {
+.membership-box {
+
+    background: #181818;
+
+    border-radius: 12px;
+
+    padding: 20px;
+
+    margin: 20px 0;
+}
+
+.membership-box p {
+
+    margin: 10px 0;
+
+    color: #ddd;
+}
+
+.pay-button {
+
+    width: 90%;
+
+    padding: 15px;
+
+    margin-top: 15px;
+
+    background: #e50914;
+
+    color: white;
+
+    border: none;
+
+    border-radius: 8px;
+
+    font-size: 19px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.pay-button:hover {
+
+    background: #b20710;
+}
+
+.pay-button:disabled {
+
+    background: #555;
+
+    cursor: not-allowed;
+}
+
+#message {
+
+    margin-top: 20px;
+
+    color: #00ff88;
+
+    line-height: 1.5;
+}
+
+.note {
+
     margin-top: 25px;
+
+    font-size: 13px;
+
+    color: #999;
+
+    line-height: 1.5;
+}
+
+.back {
+
+    display: block;
+
+    margin-top: 20px;
+
+    color: #aaa;
+
+    text-decoration: none;
+}
+
+.back:hover {
+
+    color: white;
 }
 
 </style>
@@ -45,34 +200,448 @@ h1 {
 
 <body>
 
+
 <div class="box">
 
-    <h1>🎬 Dinesh Entertainment</h1>
 
-    <h2>Monthly Membership</h2>
+<div class="logo">
 
-    <div class="price">₹60</div>
-
-    <p>1 Month Membership</p>
-
-    <p>Watch Movies & Web Series</p>
-
-
-    <div class="payment-button">
-
-        <form>
-
-            <script
-                src="https://checkout.razorpay.com/v1/payment-button.js"
-                data-payment_button_id="pl_TkYtVtj8BGDWe1"
-                async>
-            </script>
-
-        </form>
-
-    </div>
+🎬 DINESH ENTERTAINMENT
 
 </div>
+
+
+<h1>
+
+Monthly Membership
+
+</h1>
+
+
+<p class="subtitle">
+
+Watch Movies & Web Series
+
+</p>
+
+
+<div class="price">
+
+₹60
+
+</div>
+
+
+<div class="membership-box">
+
+<p>
+
+🎬 <b>1 Month Membership</b>
+
+</p>
+
+<p>
+
+🎥 Movies & Web Series
+
+</p>
+
+<p>
+
+💳 Secure Payment by Razorpay
+
+</p>
+
+<p>
+
+🔐 Secure Account Login
+
+</p>
+
+</div>
+
+
+<button
+id="payButton"
+class="pay-button"
+onclick="startPayment()">
+
+Pay ₹60
+
+</button>
+
+
+<div id="message"></div>
+
+
+<p class="note">
+
+After successful payment, your 1 month membership
+will be activated automatically.
+
+<br><br>
+
+You will be redirected to the success page
+after payment.
+
+</p>
+
+
+<a
+href="membership.html"
+class="back">
+
+← Back to Membership
+
+</a>
+
+
+</div>
+
+
+<script>
+
+
+const SUPABASE_URL =
+"https://mbplbqmkmbvffphwgfbj.supabase.co";
+
+
+const SUPABASE_PUBLISHABLE_KEY =
+"sb_publishable_IU3LvSM7Vb3gp1P_d0Qddw_XS0rr_yO";
+
+
+const CREATE_ORDER_URL =
+"https://mbplbqmkmbvffphwgfbj.supabase.co/functions/v1/create-order";
+
+
+const supabaseClient =
+supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+);
+
+
+
+async function startPayment() {
+
+
+    const button =
+    document.getElementById(
+        "payButton"
+    );
+
+
+    const message =
+    document.getElementById(
+        "message"
+    );
+
+
+    button.disabled = true;
+
+
+    message.innerHTML =
+    "🔄 Checking your account...";
+
+
+    try {
+
+
+        const {
+            data: sessionData,
+            error: sessionError
+        } =
+        await supabaseClient.auth.getSession();
+
+
+        if (sessionError) {
+
+            throw new Error(
+                sessionError.message
+            );
+
+        }
+
+
+        const session =
+        sessionData.session;
+
+
+        if (!session) {
+
+            message.innerHTML =
+            "❌ Please login first.<br><br>" +
+            "Opening membership page...";
+
+
+            setTimeout(function() {
+
+                window.location.href =
+                "membership.html";
+
+            }, 1500);
+
+
+            return;
+
+        }
+
+
+        const user =
+        session.user;
+
+
+        message.innerHTML =
+        "🔄 Getting your account details...";
+
+
+        let profile = null;
+
+
+        const {
+            data: profileData
+        } =
+        await supabaseClient
+
+        .from("profiles")
+
+        .select(
+            "full_name, mobile, email"
+        )
+
+        .eq(
+            "id",
+            user.id
+        )
+
+        .maybeSingle();
+
+
+        profile =
+        profileData;
+
+
+        message.innerHTML =
+        "🔄 Creating secure payment...";
+
+
+        const response =
+        await fetch(
+            CREATE_ORDER_URL,
+            {
+
+                method: "POST",
+
+                headers: {
+
+                    "Content-Type":
+                    "application/json",
+
+                    "Authorization":
+                    "Bearer " +
+                    session.access_token,
+
+                    "apikey":
+                    SUPABASE_PUBLISHABLE_KEY
+
+                }
+
+            }
+        );
+
+
+        const order =
+        await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                order.error ||
+                "Order creation failed"
+            );
+
+        }
+
+
+        if (
+            !order.order_id ||
+            !order.amount ||
+            !order.key_id
+        ) {
+
+            throw new Error(
+                "Invalid Razorpay order received"
+            );
+
+        }
+
+
+        message.innerHTML =
+        "🔄 Opening secure Razorpay payment...";
+
+
+        const options = {
+
+            key:
+            order.key_id,
+
+            amount:
+            order.amount,
+
+            currency:
+            order.currency,
+
+            name:
+            "Dinesh Entertainment",
+
+            description:
+            "1 Month Membership",
+
+            order_id:
+            order.order_id,
+
+
+            prefill: {
+
+                name:
+                profile?.full_name ||
+                "",
+
+                email:
+                profile?.email ||
+                user.email ||
+                "",
+
+                contact:
+                profile?.mobile ||
+                ""
+
+            },
+
+
+            notes: {
+
+                user_id:
+                user.id
+
+            },
+
+
+            theme: {
+
+                color:
+                "#e50914"
+
+            },
+
+
+            handler:
+            function(paymentResponse) {
+
+
+                message.innerHTML =
+                "✅ Payment successful!<br>" +
+                "🔄 Processing your membership...";
+
+
+                const paymentId =
+                paymentResponse
+                .razorpay_payment_id;
+
+
+                setTimeout(
+                    function() {
+
+                        window.location.href =
+                        "success.html?payment_id=" +
+                        encodeURIComponent(
+                            paymentId
+                        );
+
+                    },
+                    1000
+                );
+
+            },
+
+
+            modal: {
+
+                ondismiss:
+                function() {
+
+                    button.disabled =
+                    false;
+
+                    message.innerHTML =
+                    "❌ Payment cancelled.";
+
+                }
+
+            }
+
+        };
+
+
+        const razorpay =
+        new Razorpay(options);
+
+
+        razorpay.on(
+            "payment.failed",
+            function(response) {
+
+
+                button.disabled =
+                false;
+
+
+                message.innerHTML =
+                "❌ Payment failed.<br><br>" +
+
+                (
+                    response.error &&
+                    response.error.description
+                    ?
+                    response.error.description
+                    :
+                    "Please try again."
+                );
+
+            }
+        );
+
+
+        razorpay.open();
+
+
+    }
+
+    catch (error) {
+
+
+        console.error(
+            "Payment Error:",
+            error
+        );
+
+
+        button.disabled =
+        false;
+
+
+        message.innerHTML =
+        "❌ Payment error:<br><br>" +
+        error.message;
+
+    }
+
+}
+
+
+</script>
+
 
 </body>
 
